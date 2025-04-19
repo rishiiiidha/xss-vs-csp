@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 app.get('/basic-csp', (req, res) => {
   res.setHeader(
     "Content-Security-Policy", 
-    "default-src 'self'; script-src 'self' 'unsafe-inline'; "
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src *; object-src 'none'; base-uri 'self';"
   );
   
   res.render('basic-csp', { 
