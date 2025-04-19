@@ -1,0 +1,36 @@
+<section>
+    <h2>Test Reflected XSS</h2>
+    <form id="xss-form">
+      <label for="query">Enter XSS payload:</label>
+      <input type="text" id="query" name="query" 
+             placeholder="Try: <img src='x' onerror='alert(1)'>"
+             value="<%= query %>">
+      <button type="submit">Test Payload</button>
+    </form>
+  </section>
+  
+  <section>
+    <h2>Vulnerable Output:</h2>
+    <div class="output-container vulnerable">
+      <p>You searched for: <span id="output-unsafe"><%- query %></span></p>
+      <p><em>This section is vulnerable to reflected XSS as it unsafely reflects user input</em></p>
+    </div>
+  </section>
+  
+  <section>
+    <h2>Safe Output:</h2>
+    <div class="output-container safe">
+      <p>You searched for: <span id="output-safe"><%= query %></span></p>
+      <p><em>This section is protected using proper output encoding</em></p>
+    </div>
+  </section>
+  
+  <section>
+    <h2>Sample XSS Payloads</h2>
+    <ul>
+      <li><code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code> - Basic alert</li>
+      <li><code>&lt;img src="x" onerror="alert('XSS')"&gt;</code> - Image error event</li>
+      <li><code>&lt;body onload="alert('XSS')"&gt;</code> - Event handler attribute</li>
+      <li><code>&lt;svg onload="alert('XSS')"&gt;</code> - SVG element with event</li>
+    </ul>
+  </section>

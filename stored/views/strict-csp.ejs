@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head') %>
+<body>
+  <%- include('partials/header') %>
+  
+  <main>
+    <section class="intro">
+      <h2>Stored XSS Demo - Strict CSP Protection</h2>
+      <p>This page demonstrates stored XSS vulnerabilities with a strict Content Security Policy.</p>
+      <p class="csp-status">Current CSP Mode: <strong>Strict</strong></p>
+      <p class="description">Strict CSP requires nonces for scripts and blocks most XSS techniques. <code>script-src 'self' 'nonce-xxxx'</code></p>
+    </section>
+    
+    <%- include('partials/xss-form') %>
+    
+    <%- include('partials/comments') %>
+  </main>
+  
+  <%- include('partials/footer') %>
+  
+  <% if (typeof nonce !== 'undefined') { %>
+  <script src="/js/script.js" nonce="<%= nonce %>"></script>
+  <% } else { %>
+  <% } %>
+</body>
+</html>

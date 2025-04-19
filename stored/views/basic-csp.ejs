@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head') %>
+<body>
+  <%- include('partials/header') %>
+  
+  <main>
+    <section class="intro">
+      <h2>Stored XSS Demo - Basic CSP Protection</h2>
+      <p>This page demonstrates stored XSS vulnerabilities with a basic Content Security Policy.</p>
+      <p class="csp-status">Current CSP Mode: <strong>Basic</strong></p>
+      <p class="description">Basic CSP allows inline scripts and styles but blocks some advanced XSS techniques. <code>script-src 'self' 'unsafe-inline'</code></p>
+    </section>
+    
+    <%- include('partials/xss-form') %>
+    
+    <%- include('partials/comments') %>
+  </main>
+  
+  <%- include('partials/footer') %>
+  
+  <script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main>
+    <section>
+      <h2>DOM XSS with Basic CSP</h2>
+      <p>This page implements a <strong>Basic Content Security Policy</strong> against DOM XSS attacks.</p>
+      
+      <div class="csp-info">
+        <h3>Current CSP Configuration:</h3>
+        <code>Content-Security-Policy: default-src 'self'; script-src 'self'</code>
+        <p>This policy prevents inline scripts but DOM XSS may still occur through unsafe DOM operations.</p>
+      </div>
+    </section>
+
+    <%- include('partials/dom-xss-form') %>
+  </main>
+
+  <%- include('partials/footer') %>
+  <script src="/js/dom-xss.js"></script>
+</body>
+</html>

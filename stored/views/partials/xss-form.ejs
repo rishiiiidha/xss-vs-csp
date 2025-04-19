@@ -1,0 +1,35 @@
+<section class="form-section">
+    <h2>Submit a Comment</h2>
+    <p class="warning">This form is intentionally vulnerable to XSS attacks for demonstration purposes.</p>
+    
+    <form action="/submit-comment" method="POST">
+      <div class="form-group">
+        <label for="comment">Comment:</label>
+        <textarea id="comment" name="comment" rows="4" required></textarea>
+        <input type="hidden" name="cspMode" value="<%= csp || 'none' %>">
+      </div>
+      <button type="submit" class="btn">Submit Comment</button>
+    </form>
+    
+    <div class="payload-examples">
+      <h3>Example XSS Payloads to Try:</h3>
+      <ul>
+        <li>
+          <code>&lt;script&gt;alert('Stored XSS')&lt;/script&gt;</code>
+          <span class="note">Basic script injection (No CSP)</span>
+        </li>
+        <li>
+          <code>&lt;img src="x" onerror="alert('Event Handler XSS')"&gt;</code>
+          <span class="note">Event handler (Works with Basic CSP)</span>
+        </li>
+        <li>
+          <code>&lt;div onclick="alert('Click XSS')"&gt;Click me&lt;/div&gt;</code>
+          <span class="note">Click-triggered (Works with Basic CSP)</span>
+        </li>
+        <li>
+          <code>&lt;iframe src="javascript:alert('iframe XSS')"&gt;&lt;/iframe&gt;</code>
+          <span class="note">iframe injection (Blocked by CSP)</span>
+        </li>
+      </ul>
+    </div>
+  </section>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main>
+    <section>
+      <h2>DOM XSS with Strict CSP</h2>
+      <p>This page implements a <strong>Strict Content Security Policy</strong> to mitigate DOM XSS attacks.</p>
+      
+      <div class="csp-info">
+        <h3>Current CSP Configuration:</h3>
+        <code>Content-Security-Policy: default-src 'none'; script-src 'self' 'nonce-<%= nonce %>'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'</code>
+      </div>
+    </section>
+
+    <%- include('partials/dom-xss-form') %>
+  </main>
+
+  <%- include('partials/footer') %>
+  <script nonce="<%= nonce %>" src="/js/dom-xss.js"></script>
+</body>
+</html>

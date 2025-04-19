@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main>
+    <section>
+      <h2>DOM-based XSS - No CSP</h2>
+      <p>This page demonstrates <strong>DOM-based XSS</strong> vulnerabilities where the attack is executed entirely client-side.</p>
+      
+      <div class="warning-box">
+        <p><strong>Warning:</strong> This page is intentionally vulnerable to DOM XSS attacks for demonstration purposes.</p>
+      </div>
+    </section>
+
+    <%- include('partials/dom-xss-form') %>
+  </main>
+
+  <%- include('partials/footer') %>
+  <script src="/js/dom-xss.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stored XSS Vulnerability Demo</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .intro-section {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background-color: #2c3e50;
+      color: white;
+      border-radius: 8px;
+    }
+    
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card h3 {
+      margin-top: 0;
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .card-footer {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    
+    .main-btn {
+      display: inline-block;
+      padding: 0.7rem 1.5rem;
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    .main-btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Stored XSS Vulnerability Demo</h1>
+  </header>
+  
+  <main>
+   
+    
+    <section>
+      <h2>Choose a CSP Protection Level</h2>
+      <p>Explore how different levels of Content Security Policy protection affect XSS vulnerabilities:</p>
+      
+      <div class="card-container">
+        <div class="card">
+          <h3>No CSP Protection</h3>
+          <p>Without any Content Security Policy protection, all XSS vectors are potentially exploitable.</p>
+          <ul>
+            <li>Script tags execute</li>
+            <li>Event handlers work</li>
+            <li>Inline JavaScript runs</li>
+          </ul>
+          <div class="card-footer">
+            <a href="/no-csp" class="main-btn">Try No CSP</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3>Basic CSP Protection</h3>
+          <p>Basic CSP with unsafe-inline allows some scripts but blocks others.</p>
+          <ul>
+            <li>Blocks some script tags</li>
+            <li>Allows inline event handlers</li>
+            <li>Limits some attack vectors</li>
+          </ul>
+          <div class="card-footer">
+            <a href="/basic-csp" class="main-btn">Try Basic CSP</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3>Moderate CSP Protection</h3>
+          <p>Moderate CSP blocks inline scripts and only allows same-origin sources.</p>
+          <ul>
+            <li>Blocks inline scripts</li>
+            <li>Blocks event handlers</li>
+            <li>Allows same-origin scripts</li>
+          </ul>
+          <div class="card-footer">
+            <a href="/moderate-csp" class="main-btn">Try Moderate CSP</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3>Strict CSP Protection</h3>
+          <p>Strict CSP with nonces provides the strongest protection against XSS.</p>
+          <ul>
+            <li>Requires script nonces</li>
+            <li>Blocks inline scripts</li>
+            <li>Blocks most XSS vectors</li>
+          </ul>
+          <div class="card-footer">
+            <a href="/strict-csp" class="main-btn">Try Strict CSP</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+  </main>
+  
+  <footer>
+    <p>Created for educational purposes only. Do not use these techniques on real websites without authorization.</p>
+  </footer>
+</body>
+</html>

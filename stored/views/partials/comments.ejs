@@ -1,0 +1,17 @@
+<section class="comments-section">
+    <h2>Stored Comments</h2>
+    <p>The following comments are loaded from the database and displayed with <code>&lt;%- comment.content %&gt;</code> (unescaped):</p>
+    
+    <div class="comments">
+      <% if (comments && comments.length > 0) { %>
+        <% comments.forEach(comment => { %>
+          <div class="comment">
+            <div class="comment-content"><%- comment.content %></div>
+            <div class="comment-date"><%= new Date(comment.created_at).toLocaleString() %></div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p>No comments yet.</p>
+      <% } %>
+    </div>
+  </section>
