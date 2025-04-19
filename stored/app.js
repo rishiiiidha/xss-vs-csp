@@ -78,14 +78,14 @@ app.get('/strict-csp', async (req, res) => {
   });
 });
 
-// Handle comment submissions
+
 app.post('/submit-comment', async (req, res) => {
   const cspMode = req.body.cspMode || 'none';
   const comment = req.body.comment || '';
   
   await database.addComment(comment);
   
-  // Redirect to the appropriate page based on CSP mode
+
   switch(cspMode) {
     case 'basic':
       res.redirect('/basic-csp');
@@ -104,7 +104,7 @@ app.post('/submit-comment', async (req, res) => {
   }
 });
 
-// Admin routes
+
 app.get('/admin', async (req, res) => {
   const comments = await database.getComments();
   res.render('admin', { 
