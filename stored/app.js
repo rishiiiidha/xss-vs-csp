@@ -115,8 +115,6 @@ app.get('/admin', async (req, res) => {
 app.post('/admin/delete/:id', async (req, res) => {
   const id = req.params.id;
   try {
-    // This would be implemented in the database module if we were to fully implement it
-    // await database.deleteComment(id);
     res.redirect('/admin');
   } catch (error) {
     console.error('Error deleting comment:', error);
@@ -134,7 +132,7 @@ app.post('/admin/reset', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Stored XSS Demo running on http://localhost:${PORT}`);
   console.log(`Admin panel available at http://localhost:${PORT}/admin`);
