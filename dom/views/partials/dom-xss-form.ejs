@@ -68,31 +68,7 @@
   </section>
 
   <section>
-    <h2>5. insertAdjacentHTML (Vulnerable)</h2>
-    <div class="output-container vulnerable">
-      <div id="output-adjacent"></div>
-      <p><em>Uses <code>element.insertAdjacentHTML('beforeend', userInput)</code></em></p>
-    </div>
-  </section>
-
-  <section>
-    <h2>6. jQuery-style insertion (Vulnerable)</h2>
-    <div class="output-container vulnerable">
-      <div id="output-jquery"></div>
-      <p><em>Simulates jQuery's <code>$('#element').html(userInput)</code></em></p>
-    </div>
-  </section>
-
-  <section>
-    <h2>7. DOM clobbering (Vulnerable)</h2>
-    <div class="output-container vulnerable">
-      <div id="output-dom-clobbering"></div>
-      <p><em>Shows how named inputs can override document properties</em></p>
-    </div>
-  </section>
-
-  <section>
-    <h2>8. Safe Methods Comparison</h2>
+    <h2>5. Safe Methods Comparison</h2>
     <div class="output-container safe">
       <div id="output-textcontent"></div>
       <p><em>Uses <code>element.textContent = userInput</code> (safe)</em></p>
@@ -188,7 +164,7 @@
       adjacent.insertAdjacentHTML('beforeend', `<div>Welcome, ${username}!</div>`);
       adjacent.insertAdjacentHTML('beforeend', `<div class="comment">${comment}</div>`);
       
-      document.getElementById('output-jquery').innerHTML = ''; // jQuery-style .html() is similar to innerHTML
+      document.getElementById('output-jquery').innerHTML = '';
       document.getElementById('output-jquery').innerHTML = `<div>${username}</div>`;
       
       const clob = document.getElementById('output-dom-clobbering');
